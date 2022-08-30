@@ -96,7 +96,9 @@ def save_model():
 
 def load_model():
     print(Fore.BLUE + "\nLoad model" + Style.RESET_ALL)
-    return torch.load("model/model_car_racing.pt")
+    model = ImageDQN()
+    model.load_state_dict(torch.load("model/model_car_racing.pt"), strict=False)
+    return model
 
 ### MAIN
 
