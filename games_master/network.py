@@ -28,3 +28,22 @@ class DQN(torch.nn.Module):
 
     def forward(self, obs):
         return self.net(obs)
+
+
+class ImageDQN(torch.nn.Module):
+
+
+    def __init__(self):
+        super().__init__()
+        self.net = torch.nn.Sequential(
+            torch.nn.Conv2d(3, 20, 1),
+            torch.nn.ReLU(inplace=True),
+            torch.nn.Flatten(),
+            torch.nn.Linear(96*96*20, 5)
+        )
+        pass
+
+
+    def forward(self, X):
+        y = self.net(X)
+        return y

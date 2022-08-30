@@ -4,16 +4,20 @@ This module contains the RL environment. We provide a gym setup by default, whic
 """
 
 import gym
+import torch
 
 from config import CFG
 
+
+def parse_obs(obs):
+    return torch.permute(torch.tensor(obs, dtype=torch.float), (2, 0, 1)).unsqueeze(0)
 
 def get_env():
     """
     Returns a gym environment. Replace by a custom environment if needed.
     """
     # We use the LunarLander env. Other environments are available.
-    return gym.make("LunarLander-v2")
+    return gym.make("CarRacing-v2", continuous=False)
 
 
 def run_env(env, agt):
@@ -23,27 +27,34 @@ def run_env(env, agt):
 
     obs_old, info = env.reset(seed=CFG.rnd_seed, return_info=True)
 
+    opt = torch.optim.Adam(agt.net.parameters(), lr=0.0001)
     # We get the action space.
     act_space = env.action_space
 
-    for _ in range(1000):
+    new_obs = parse_obs(env.reset())
 
-        # We can visually render the learning environment. We disable it for performance.
-        # env.render()
+    for _ in range(10000):
 
-        # We request an action from the agent.
-        act = agt.get(obs_old, act_space)
+        val = agt(new_obs)
+        act = torch.argmax(val).numpy()
+        old_obs = new_obs
+        print(val, act)
 
-        # We apply the action on the environment.
-        obs_new, rwd, end, _ = env.step(act)
+        new_obs, reward, done, info = env.step(act)
+        new_obs = parse_obs(new_obs)
 
-        # We perform a learning step.
-        agt.set(obs_old, act, rwd, obs_new)
+        env.render()
 
-        # Update latest observation
-        obs_old = obs_new
+        out = val.squeeze(0)[act]
+        with torch.no_grad():
+            exp = reward + 0.98 * agt(new_obs).max()
 
-        if end:
-            obs_end, info = env.reset(return_info=True)
+        loss = torch.square(exp - out)
 
+        opt.zero_grad()
+        loss.sum().backward()
+        opt.step()
+
+        if done:
+            env.reset()
     env.close()
