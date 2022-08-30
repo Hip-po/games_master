@@ -8,6 +8,7 @@ import torch.nn
 
 import network
 from config import CFG
+from script_Maxime import ImageDQN
 
 
 class Agent:
@@ -55,8 +56,8 @@ class DQNAgent(Agent):
     """
 
     def __init__(self, x_dim, y_dim):
-        self.net = network.DQN(x_dim, y_dim)
-        self.opt = torch.optim.Adam(self.net.parameters(), lr=0.0001)
+        self.net = ImageDQN()
+        self.opt = torch.optim.Adam(agt.net.parameters(), lr=0.0001)
 
     def set(self, obs_old, act, rwd, obs_new):
         """
