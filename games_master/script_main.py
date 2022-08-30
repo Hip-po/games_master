@@ -57,7 +57,7 @@ def agent_step(old_obs, action, new_obs, reward):
     if len(BUFFER) >= BATCH_SIZE and agent_step.iter % BATCH_SIZE == 0:
         learn()
 
-    if agent_step.iter>10000 and agent_step.iter % SAVE_MODEL_FREQ==0:
+    if agent_step.iter % SAVE_MODEL_FREQ==0:
         save_model()
 
     if agent_step.iter % TARGET_FREQ == 0:
@@ -125,7 +125,7 @@ for i in range(10000000):
     new_obs = parse_obs(new_obs)
     agent_step(old_obs, action, new_obs, reward)
 
-    if i > 50000:
+    if i > 100000:
         env.render()
 
     if done:
