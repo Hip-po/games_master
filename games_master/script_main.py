@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import random
 import numpy as np
 import collections
+from colorama import Fore, Style
 
 GAMMA = 0.98
 EPSILON=1
@@ -47,13 +48,6 @@ def policy(new_obs):
         val = agt(new_obs.unsqueeze(0))
         return int(torch.argmax(val).numpy())
 
-def save_model():
-    torch.save(agt.state_dict(), "model_car_racing.pt")
-
-def load_model():
-    model = torch.load("model_car_racing.pt")
-    return model
-
 def agent_step(old_obs, action, new_obs, reward):
 
     agent_step.iter += 1
@@ -63,7 +57,7 @@ def agent_step(old_obs, action, new_obs, reward):
     if len(BUFFER) >= BATCH_SIZE and agent_step.iter % BATCH_SIZE == 0:
         learn()
 
-    if agent_step.iter % SAVE_MODEL_FREQ==0:
+    if agent_step.iter>10000 and agent_step.iter % SAVE_MODEL_FREQ==0:
         save_model()
 
     if agent_step.iter % TARGET_FREQ == 0:
@@ -95,6 +89,14 @@ def learn():
     opt.zero_grad()
     loss.sum().backward()
     opt.step()
+
+def save_model():
+    print(Fore.BLUE + "\nSave model" + Style.RESET_ALL)
+    torch.save(agt.state_dict(), "model/model_car_racing.pt")
+
+def load_model():
+    print(Fore.BLUE + "\nLoad model" + Style.RESET_ALL)
+    return torch.load("model/model_car_racing.pt")
 
 ### MAIN
 
