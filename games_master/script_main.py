@@ -9,9 +9,10 @@ GAMMA = 0.98
 EPSILON=1
 MIN_EPSILON = 0.01
 ACT_RANGE = 5
-BATCH_SIZE = 256
+BATCH_SIZE = 128
 TARGET_FREQ = 1000
-BUFFER = collections.deque(maxlen=100000)
+SAVE_MODEL_FREQ=10000
+BUFFER = collections.deque(maxlen=10000)
 
 class ImageDQN(torch.nn.Module):
 
@@ -46,6 +47,13 @@ def policy(new_obs):
         val = agt(new_obs.unsqueeze(0))
         return int(torch.argmax(val).numpy())
 
+def save_model():
+    torch.save(agt.state_dict(), "model_car_racing.pt")
+
+def load_model():
+    model = torch.load("model_car_racing.pt")
+    return model
+
 def agent_step(old_obs, action, new_obs, reward):
 
     agent_step.iter += 1
@@ -54,6 +62,9 @@ def agent_step(old_obs, action, new_obs, reward):
 
     if len(BUFFER) >= BATCH_SIZE and agent_step.iter % BATCH_SIZE == 0:
         learn()
+
+    if agent_step.iter % SAVE_MODEL_FREQ==0:
+        save_model()
 
     if agent_step.iter % TARGET_FREQ == 0:
         tgt.load_state_dict(agt.state_dict())
@@ -87,8 +98,12 @@ def learn():
 
 ### MAIN
 
-agt = ImageDQN()
-tgt = ImageDQN()
+try:
+    agt = load_model()
+    tgt = load_model()
+except:
+    agt = ImageDQN()
+    tgt = ImageDQN()
 
 for param in tgt.parameters():
     param.requires_grad = False
@@ -108,7 +123,7 @@ for i in range(10000000):
     new_obs = parse_obs(new_obs)
     agent_step(old_obs, action, new_obs, reward)
 
-    if i > 100000:
+    if i > 50000:
         env.render()
 
     if done:
