@@ -6,9 +6,10 @@ import numpy as np
 import collections
 
 GAMMA = 0.98
-EPSILON = 0.1
+EPSILON=1
+MIN_EPSILON = 0.01
 ACT_RANGE = 5
-BATCH_SIZE = 128
+BATCH_SIZE = 256
 TARGET_FREQ = 1000
 BUFFER = collections.deque(maxlen=100000)
 
@@ -57,6 +58,9 @@ def agent_step(old_obs, action, new_obs, reward):
     if agent_step.iter % TARGET_FREQ == 0:
         tgt.load_state_dict(agt.state_dict())
 
+    eps=np.exp(-(agent_step.iter-0.15))
+    EPSILON = eps if eps > MIN_EPSILON else MIN_EPSILON
+
 if "iter" not in agent_step.__dict__:
     agent_step.iter = 0
 
@@ -71,9 +75,6 @@ def learn():
     reward = torch.tensor(reward)
 
     y_pred = torch.gather(agt(old_obs), 1, action).squeeze(1)
-
-    # with torch.no_grad():
-    #     y_true = reward + tgt(new_obs).max(1)[0] * GAMMA
 
     y_true = reward + tgt(new_obs).max(1)[0] * GAMMA
 
@@ -107,7 +108,8 @@ for i in range(10000000):
     new_obs = parse_obs(new_obs)
     agent_step(old_obs, action, new_obs, reward)
 
-    env.render()
+    if i > 100000:
+        env.render()
 
     if done:
         env.reset()
