@@ -20,7 +20,7 @@ class ImageDQN(torch.nn.Module):
     def __init__(self):
         super().__init__()
         self.net = torch.nn.Sequential(
-            torch.nn.Conv2d(3, 20, 2),
+            torch.nn.Conv2d(3, 20, 2),  #input_channels=3, filters = 20, kernel_size =2
             torch.nn.ReLU(inplace=True),
             torch.nn.MaxPool2d(2),
             torch.nn.ReLU(inplace=True),
@@ -31,7 +31,7 @@ class ImageDQN(torch.nn.Module):
             torch.nn.Flatten(start_dim=1),
             torch.nn.Linear(20*529, 1024),
             torch.nn.ReLU(inplace=True),
-            torch.nn.Linear(1024, 5),
+            torch.nn.Linear(1024, ACT_RANGE), # 1024 is input_dim
         )
 
     def forward(self, X):
