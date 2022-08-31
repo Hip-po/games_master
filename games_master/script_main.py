@@ -7,11 +7,18 @@ import random
 import numpy as np
 import collections
 from colorama import Fore, Style
+
 from torchvision.transforms.functional import crop
+from torchvision.transforms import Grayscale
+import torchvision.transforms as tv
 
 import os
 
-PATH_MODEL = "model/model_car_racing.pt"
+PATH_MODEL = "model/model_car_racing_v2.pt"
+
+MANUAL=False
+GRAYSCALE=True
+
 GAMMA = 0.98
 EPSILON = 1
 MIN_EPSILON = 0.01
@@ -19,10 +26,13 @@ ACT_RANGE = 5
 BATCH_SIZE = 128
 TARGET_FREQ = 1000
 SAVE_MODEL_FREQ = 10000
+
 BUFFER = collections.deque(maxlen=10000)
+
 loss_evolution = []
 frame_step = []
 reward_evolution = []
+
 dict_choice = {
     ' ': 0,
     'q': 1,
@@ -49,7 +59,7 @@ class ImageDQN(torch.nn.Module):
     def __init__(self):
         super().__init__()
         self.net = torch.nn.Sequential(
-            torch.nn.Conv2d(3, 20, 2),  # input_channels=3, filters = 20, kernel_size =2
+            torch.nn.Conv2d(1 if GRAYSCALE else 3, 20, 2),
             torch.nn.ReLU(inplace=True),
             torch.nn.MaxPool2d(2),
             torch.nn.ReLU(inplace=True),
@@ -58,30 +68,34 @@ class ImageDQN(torch.nn.Module):
             torch.nn.MaxPool2d(2),
             torch.nn.ReLU(inplace=True),
             torch.nn.Flatten(start_dim=1),
-            torch.nn.Linear(20 * 529, 1024),
+            torch.nn.Linear(20*483, 1024),
             torch.nn.ReLU(inplace=True),
-            torch.nn.Linear(1024, ACT_RANGE),  # 1024 is input_dim
+            torch.nn.Linear(1024, 5),
         )
+        self.img=tv.transforms.Compose([tv.transforms.ToTensor(),
+                                          tv.transforms.Grayscale(),
+                                          tv.Lambda(lambda x: tv.functional.crop(x,0,0,88,96))
+
+                                          ])
 
     def forward(self, X):
+
+        X= torch.stack([self.img(x) for x in X])
+
         y = self.net(X)
         return y
-
-
-def parse_obs(obs):
-    return torch.permute(torch.tensor(obs, dtype=torch.float), (2, 0, 1))
-
 
 def policy(new_obs):
     if random.uniform(0, 1) < EPSILON:
         return random.randint(0, ACT_RANGE - 1)
     with torch.no_grad():
-        val = agt(new_obs.unsqueeze(0))
+        val = agt(new_obs).unsqueeze(0)
         return int(torch.argmax(val).numpy())
 
 
 def agent_step(old_obs, action, new_obs, reward):
     global EPSILON
+
     agent_step.iter += 1
 
     BUFFER.append((old_obs, action, new_obs, reward))
@@ -89,13 +103,13 @@ def agent_step(old_obs, action, new_obs, reward):
     if len(BUFFER) >= BATCH_SIZE and agent_step.iter % BATCH_SIZE == 0:
         learn()
 
-    if agent_step.iter % SAVE_MODEL_FREQ == 0:
+    if agent_step.iter % SAVE_MODEL_FREQ==0:
         save_model()
 
     if agent_step.iter % TARGET_FREQ == 0:
         tgt.load_state_dict(agt.state_dict())
 
-    eps = np.exp(-(agent_step.iter - 0.15))
+    eps=np.exp(-(agent_step.iter-0.15))
     EPSILON = eps if eps > MIN_EPSILON else MIN_EPSILON
 
 
@@ -107,8 +121,6 @@ def learn():
     batch = random.sample(BUFFER, BATCH_SIZE)
     old_obs, action, new_obs, reward = zip(*batch)
 
-    old_obs = torch.stack(old_obs)
-    new_obs = torch.stack(new_obs)
     action = torch.tensor(action).unsqueeze(1)
     reward = torch.tensor(reward)
 
@@ -178,102 +190,100 @@ else:
     agt = ImageDQN()
     tgt = ImageDQN()
 
+
 for param in tgt.parameters():
     param.requires_grad = False
 
 opt = torch.optim.Adam(agt.net.parameters(), lr=0.0001)
 env = gym.make("CarRacing-v2", continuous=False)
 
-new_obs = parse_obs(env.reset())
-
-for _ in range(100):
-    old_obs = new_obs
-    action = dict_choice['z']
-
-    old_obs = new_obs
-
-    new_obs, reward, done, info = env.step(action)
-    new_obs = parse_obs(new_obs)
-    agent_step(old_obs, action, new_obs, reward)
-
-    if done:
-        env.reset()
+new_obs = env.reset()
 
 # MANUAL
-for _ in range(500):
-    input_choice = input()
-    old_obs = new_obs
+if MANUAL:
 
-    if len(input_choice) <= 1:
+    for _ in range(100):
+        old_obs = new_obs
+        action = dict_choice['z']
 
-        if input_choice not in dict_choice.keys():
-            action = 0
+        old_obs = new_obs
 
-            old_obs = new_obs
+        new_obs, reward, done, info = env.step(action)
+        agent_step(old_obs, action, new_obs, reward)
 
-            new_obs, reward, done, info = env.step(action)
-            new_obs = parse_obs(new_obs)
-            agent_step(old_obs, action, new_obs, reward)
-            if done:
-                env.reset()
+        if done:
+            env.reset()
+
+    for _ in range(500):
+        input_choice = input()
+        old_obs = new_obs
+
+        if len(input_choice) <= 1:
+
+            if input_choice not in dict_choice.keys():
+                action = 0
+
+                old_obs = new_obs
+
+                new_obs, reward, done, info = env.step(action)
+                agent_step(old_obs, action, new_obs, reward)
+                if done:
+                    env.reset()
+
+            else:
+
+                action = dict_choice[input_choice]
+                old_obs = new_obs
+
+                new_obs, reward, done, info = env.step(action)
+                agent_step(old_obs, action, new_obs, reward)
+                if done:
+                    env.reset()
 
         else:
-
-            action = dict_choice[input_choice]
-            old_obs = new_obs
-
-            new_obs, reward, done, info = env.step(action)
-            new_obs = parse_obs(new_obs)
-            agent_step(old_obs, action, new_obs, reward)
-            if done:
-                env.reset()
-
-    else:
-        try:
-            n = int(input_choice[:-1])
-            letter = input_choice[-1]
-        except:
-            n = 5
-            letter = ' '
-        for _ in range(n):
             try:
-                action = dict_choice[letter]
-
-                old_obs = new_obs
-
-                new_obs, reward, done, info = env.step(action)
-                new_obs = parse_obs(new_obs)
-                agent_step(old_obs, action, new_obs, reward)
-                if done:
-                    env.reset()
+                n = int(input_choice[:-1])
+                letter = input_choice[-1]
             except:
-                action = dict_choice['z']
+                n = 5
+                letter = ' '
+            for _ in range(n):
+                try:
+                    action = dict_choice[letter]
 
-                old_obs = new_obs
+                    old_obs = new_obs
 
-                new_obs, reward, done, info = env.step(action)
-                new_obs = parse_obs(new_obs)
-                agent_step(old_obs, action, new_obs, reward)
-                if done:
-                    env.reset()
+                    new_obs, reward, done, info = env.step(action)
+                    agent_step(old_obs, action, new_obs, reward)
+                    if done:
+                        env.reset()
+                except:
+                    action = dict_choice['z']
 
-    env.render()
+                    old_obs = new_obs
 
-    if done:
-        env.reset()
+                    new_obs, reward, done, info = env.step(action)
+                    agent_step(old_obs, action, new_obs, reward)
+                    if done:
+                        env.reset()
 
-for _ in range(100000000):
+        env.render()
+
+        if done:
+            env.reset()
+
+while True:
 
     action = policy(new_obs)
 
     old_obs = new_obs
 
     new_obs, reward, done, info = env.step(action)
-    new_obs = parse_obs(new_obs)
     agent_step(old_obs, action, new_obs, reward)
 
     env.render()
 
     if done:
         env.reset()
+
 env.close()
