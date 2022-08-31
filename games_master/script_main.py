@@ -57,7 +57,7 @@ def agent_step(old_obs, action, new_obs, reward):
     if len(BUFFER) >= BATCH_SIZE and agent_step.iter % BATCH_SIZE == 0:
         learn()
 
-    if agent_step.iter>10000 and agent_step.iter % SAVE_MODEL_FREQ==0:
+    if agent_step.iter % SAVE_MODEL_FREQ==0:
         save_model()
 
     if agent_step.iter % TARGET_FREQ == 0:
@@ -91,21 +91,26 @@ def learn():
     opt.step()
 
 def save_model():
-    print(Fore.BLUE + "\nSave model" + Style.RESET_ALL)
+    print(Fore.BLUE + "\nSave model\n" + Style.RESET_ALL)
     torch.save(agt.state_dict(), "model/model_car_racing.pt")
 
 def load_model():
-    print(Fore.BLUE + "\nLoad model" + Style.RESET_ALL)
-    return torch.load("model/model_car_racing.pt")
+    print(Fore.BLUE + "\nLoad model\n" + Style.RESET_ALL)
+    model = ImageDQN()
+    model.load_state_dict(torch.load("model/model_car_racing.pt"), strict=False)
+    return model
 
 ### MAIN
 
-try:
-    agt = load_model()
-    tgt = load_model()
-except:
-    agt = ImageDQN()
-    tgt = ImageDQN()
+# try:
+#     agt = load_model()
+#     tgt = load_model()
+# except:
+#     agt = ImageDQN()
+#     tgt = ImageDQN()
+
+agt = load_model()
+tgt = load_model()
 
 for param in tgt.parameters():
     param.requires_grad = False
@@ -125,8 +130,7 @@ for i in range(10000000):
     new_obs = parse_obs(new_obs)
     agent_step(old_obs, action, new_obs, reward)
 
-    if i > 50000:
-        env.render()
+    env.render()
 
     if done:
         env.reset()
