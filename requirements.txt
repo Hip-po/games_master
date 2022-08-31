@@ -34,3 +34,4 @@ gym
 torch
 box2d
 torchvision
+matplotlib
