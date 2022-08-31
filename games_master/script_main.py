@@ -81,6 +81,7 @@ def policy(new_obs):
 
 
 def agent_step(old_obs, action, new_obs, reward):
+    global EPSILON
     agent_step.iter += 1
 
     BUFFER.append((old_obs, action, new_obs, reward))
