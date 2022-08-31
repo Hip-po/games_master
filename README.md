@@ -18,7 +18,7 @@ for that we created different model
 
 #### Deep-Q Network
 
-### <img src="GIF\car_racing_dqn_discret.gif" width="500px">
+### <img src="GIF\car_racing_dqn_discret.gif" width="450px">
 
 #### A3C
 
