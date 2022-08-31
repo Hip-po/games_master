@@ -1,74 +1,36 @@
-# Data analysis
-- Document here the project: games_master
-- Description: Project Description
-- Data Source:
-- Type of analysis:
+# GAMES MASTER
 
-Please document the project the better you can.
+This is a Lewagon final project, with [Camila-mallmann](https://github.com/Camila-mallmann), [abdl242](https://github.com/abdl242) and [myself](https://github.com/Hip-po)
 
-# Startup the project
+## The project
 
-The initial setup.
+The goal is to create an AI that learns to play differences gym using Reinforcement Learning, we stated with the gym car racing.
 
-Create virtualenv and install the project:
-```bash
-sudo apt-get install virtualenv python-pip python-dev
-deactivate; virtualenv ~/venv ; source ~/venv/bin/activate ;\
-    pip install pip -U; pip install -r requirements.txt
-```
+## racing car
 
-Unittest test:
-```bash
-make clean install test
-```
+this game is quite simple, you have a car and a track and the car should complete the entire track in minimum time to maximize reward.
 
-Check for games_master in gitlab.com/{group}.
-If your project is not set please add it:
+for that we created different model
 
-- Create a new project on `gitlab.com/{group}/games_master`
-- Then populate it:
 
-```bash
-##   e.g. if group is "{group}" and project_name is "games_master"
-git remote add origin git@github.com:{group}/games_master.git
-git push -u origin master
-git push -u origin --tags
-```
+### discreet values:
 
-Functionnal test with a script:
 
-```bash
-cd
-mkdir tmp
-cd tmp
-games_master-run
-```
+#### Deep-Q Network
 
-# Install
+### <img src="GIF\car_racing_dqn_discret.gif" width="300px">
 
-Go to `https://github.com/{group}/games_master` to see the project, manage issues,
-setup you ssh public key, ...
+#### A3C
 
-Create a python3 virtualenv and activate it:
+TODO :
 
-```bash
-sudo apt-get install virtualenv python-pip python-dev
-deactivate; virtualenv -ppython3 ~/venv ; source ~/venv/bin/activate
-```
+### continues values:
 
-Clone the project and install it:
 
-```bash
-git clone git@github.com:{group}/games_master.git
-cd games_master
-pip install -r requirements.txt
-make clean install test                # install and test
-```
-Functionnal test with a script:
+#### Deep-Q Network
 
-```bash
-cd
-mkdir tmp
-cd tmp
-games_master-run
-```
+TODO :
+
+#### A3C
+
+TODO :

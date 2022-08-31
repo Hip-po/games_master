@@ -16,8 +16,8 @@ import os
 
 PATH_MODEL = "model/model_car_racing_v2.pt"
 
-MANUAL=False
-GRAYSCALE=True
+MANUAL = False
+GRAYSCALE = True
 
 GAMMA = 0.98
 EPSILON = 1
@@ -68,22 +68,22 @@ class ImageDQN(torch.nn.Module):
             torch.nn.MaxPool2d(2),
             torch.nn.ReLU(inplace=True),
             torch.nn.Flatten(start_dim=1),
-            torch.nn.Linear(20*483, 1024),
+            torch.nn.Linear(20 * 483, 1024),
             torch.nn.ReLU(inplace=True),
             torch.nn.Linear(1024, 5),
         )
-        self.img=tv.transforms.Compose([tv.transforms.ToTensor(),
+        self.img = tv.transforms.Compose([tv.transforms.ToTensor(),
                                           tv.transforms.Grayscale(),
-                                          tv.Lambda(lambda x: tv.functional.crop(x,0,0,88,96))
+                                          tv.Lambda(lambda x: tv.functional.crop(x, 0, 0, 88, 96))
 
                                           ])
 
     def forward(self, X):
-
-        X= torch.stack([self.img(x) for x in X])
+        X = torch.stack([self.img(x) for x in X])
 
         y = self.net(X)
         return y
+
 
 def policy(new_obs):
     if random.uniform(0, 1) < EPSILON:
@@ -103,13 +103,13 @@ def agent_step(old_obs, action, new_obs, reward):
     if len(BUFFER) >= BATCH_SIZE and agent_step.iter % BATCH_SIZE == 0:
         learn()
 
-    if agent_step.iter % SAVE_MODEL_FREQ==0:
+    if agent_step.iter % SAVE_MODEL_FREQ == 0:
         save_model()
 
     if agent_step.iter % TARGET_FREQ == 0:
         tgt.load_state_dict(agt.state_dict())
 
-    eps=np.exp(-(agent_step.iter-0.15))
+    eps = np.exp(-(agent_step.iter - 0.15))
     EPSILON = eps if eps > MIN_EPSILON else MIN_EPSILON
 
 
@@ -189,7 +189,6 @@ if os.path.exists(PATH_MODEL):
 else:
     agt = ImageDQN()
     tgt = ImageDQN()
-
 
 for param in tgt.parameters():
     param.requires_grad = False
