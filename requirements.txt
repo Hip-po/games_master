@@ -5,3 +5,5 @@ gym[box2d]
 torch
 torchvision
 matplotlib
+stable-baselines3
+opencv-python
