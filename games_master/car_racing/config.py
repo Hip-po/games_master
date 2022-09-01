@@ -12,7 +12,7 @@ class Configuration:
         """
         pass
 
-    def init(self, agt_type, **kwargs):
+    def init(self):
         """
         User-defined configuration init. Mandatory to properly set all configuration parameters.
         """
@@ -24,8 +24,9 @@ class Configuration:
         self.CONTINUOUS = False
         self.GRAPH=False
 
+
         self.GAMMA = 0.98
-        self.EPSILON = 1
+        self.EPSILON = 0.5
         self.MIN_EPSILON = 0.01
         self.ACT_RANGE = 5
         self.BATCH_SIZE = 128
