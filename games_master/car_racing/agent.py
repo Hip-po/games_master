@@ -80,9 +80,17 @@ class ImageDQNagent():
             while self.iter<128:
                 return 3
 
-            print(len(self.new_obs))
-            exit()
 
+
+            # print(len(self.new_obs))
+            # exit()
+            print(type(self.new_obs))
+            print(len(self.new_obs))
+            print(self.agt(self.new_obs).shape)
+            print(torch.argmax(self.agt(self.new_obs)))
+            print(torch.argmax(self.agt(self.new_obs).unsqueeze(0)))
+            print(torch.argmax(self.agt(self.new_obs).unsqueeze(0)).numpy())
+            exit()
             val = self.agt(self.new_obs).unsqueeze(0)
 
             return int(torch.argmax(val).numpy())
