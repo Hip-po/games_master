@@ -1,7 +1,6 @@
 import gym
 import torch
 import matplotlib.pyplot as plt
-import matplotlib.animation as FuncAnimation
 
 import random
 import numpy as np
