@@ -5,4 +5,4 @@ gym[box2d]
 torch
 torchvision
 matplotlib
-stable_baselines3
+tkinter
