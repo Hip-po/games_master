@@ -20,9 +20,10 @@ class ImageDQNagent():
             self.tgt = ImageDQN()
         self.opt = torch.optim.Adam(self.agt.net.parameters(), lr=0.0001)
         self.graph=draw_graph()
+        self.iter=0
 
     def policy(self,new_obs):
-        if random.uniform(0, 1) < self.epsilon:
+        if random.uniform(0, 1) < CFG.EPSILON:
             return random.randint(0, CFG.ACT_RANGE - 1)
         with torch.no_grad():
 
@@ -35,6 +36,7 @@ class ImageDQNagent():
 
     def agent_step(self,old_obs, action, new_obs, reward):
         self.iter += 1
+
 
         self.BUFFER.append((old_obs, action, new_obs, reward))
 
@@ -54,7 +56,7 @@ class ImageDQNagent():
 
 
     def learn(self):
-        batch = random.sample(CFG.BUFFER, CFG.BATCH_SIZE)
+        batch = random.sample(self.BUFFER, CFG.BATCH_SIZE)
         old_obs, action, new_obs, reward = zip(*batch)
 
         action = torch.tensor(action).unsqueeze(1)
