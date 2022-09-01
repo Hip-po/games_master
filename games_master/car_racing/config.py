@@ -12,7 +12,7 @@ class Configuration:
         """
         pass
 
-    def init(self, agt_type, **kwargs):
+    def init(self):
         """
         User-defined configuration init. Mandatory to properly set all configuration parameters.
         """

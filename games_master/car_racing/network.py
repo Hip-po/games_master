@@ -29,7 +29,7 @@ class ImageDQN(torch.nn.Module):
                                           ])
 
     def forward(self, X):
-        X = torch.stack([self.img(x) if x.shape == (96,96,1) else torch.from_numpy(x) for x in X])
+        X = torch.stack([self.img(x) for x in X])
 
         y = self.net(X)
         return y
