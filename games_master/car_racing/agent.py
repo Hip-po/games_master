@@ -20,21 +20,16 @@ class ImageDQNagent():
             self.tgt = ImageDQN()
         self.opt = torch.optim.Adam(self.agt.net.parameters(), lr=0.0001)
         self.graph=draw_graph()
+        self.iter=0
 
-    def policy(self,new_obs):
-        if random.uniform(0, 1) < self.epsilon:
-            return random.randint(0, CFG.ACT_RANGE - 1)
-        with torch.no_grad():
 
-            print(new_obs.shape)
 
-            val = self.agt(new_obs).unsqueeze(0)
 
-            return int(torch.argmax(val).numpy())
 
 
     def agent_step(self,old_obs, action, new_obs, reward):
         self.iter += 1
+
 
         self.BUFFER.append((old_obs, action, new_obs, reward))
 
@@ -49,20 +44,25 @@ class ImageDQNagent():
         if self.iter % CFG.TARGET_FREQ == 0:
             self.tgt.load_state_dict(self.agt.state_dict())
 
-        eps = np.exp((-self.iter - 0.15)*0.00005)
+        if not os.path.exists(CFG.PATH_MODEL):
+            eps = np.exp((-self.iter - 0.15)*0.00005)
         self.epsilon = eps if eps > CFG.MIN_EPSILON else CFG.MIN_EPSILON
 
 
+
     def learn(self):
-        batch = random.sample(CFG.BUFFER, CFG.BATCH_SIZE)
-        old_obs, action, new_obs, reward = zip(*batch)
+        batch = random.sample(self.BUFFER, CFG.BATCH_SIZE)
+        self.old_obs, action, self.new_obs, reward = zip(*batch)
+
+        # print(old_obs.shape)
+        # exit()
 
         action = torch.tensor(action).unsqueeze(1)
         reward = torch.tensor(reward)
 
-        y_pred = torch.gather(self.agt(old_obs), 1, action).squeeze(1)
+        y_pred = torch.gather(self.agt(self.old_obs), 1, action).squeeze(1)
 
-        y_true = reward + self.tgt(new_obs).max(1)[0] * CFG.GAMMA
+        y_true = reward + self.tgt(self.new_obs).max(1)[0] * CFG.GAMMA
 
         loss = torch.square(y_true - y_pred)
 
@@ -71,3 +71,26 @@ class ImageDQNagent():
         self.opt.zero_grad()
         loss.sum().backward()
         self.opt.step()
+
+    def policy(self,new_obs):
+        if random.uniform(0, 1) < CFG.EPSILON:
+            return random.randint(0, CFG.ACT_RANGE - 1)
+        with torch.no_grad():
+
+            while self.iter<128:
+                return 3
+
+
+
+            # print(len(self.new_obs))
+            # exit()
+            print(type(self.new_obs))
+            print(len(self.new_obs))
+            print(self.agt(self.new_obs).shape)
+            print(torch.argmax(self.agt(self.new_obs)))
+            print(torch.argmax(self.agt(self.new_obs).unsqueeze(0)))
+            print(torch.argmax(self.agt(self.new_obs).unsqueeze(0)).numpy())
+            exit()
+            val = self.agt(self.new_obs).unsqueeze(0)
+
+            return int(torch.argmax(val).numpy())

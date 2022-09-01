@@ -6,13 +6,13 @@ import random
 import numpy as np
 import collections
 from torchvision.transforms.functional import crop
-from torchvision.transforms import Grayscale
+from torchvision.transforms import Grayscale,ToPILImage
 import torchvision.transforms as tv
 
 
 
 GAMMA = 0.98
-EPSILON=1
+EPSILON=0.5
 MIN_EPSILON = 0.01
 ACT_RANGE = 5
 BATCH_SIZE = 128
@@ -20,7 +20,7 @@ TARGET_FREQ = 1000
 SAVE_MODEL_FREQ=10000
 BUFFER = collections.deque(maxlen=10000)
 
-GRAYSCALE=True
+GRAYSCALE=False
 
 loss_evolution = []
 frame_step = []
@@ -61,18 +61,26 @@ class ImageDQN(torch.nn.Module):
             torch.nn.Linear(1024, 5),
         )
         self.img=tv.transforms.Compose([tv.transforms.ToTensor(),
-                                          tv.transforms.Grayscale(),
-                                          tv.Lambda(lambda x: tv.functional.crop(x,0,0,88,96))
+                                          #tv.transforms.Grayscale(),
+                                          #tv.Lambda(lambda x: tv.functional.crop(x,0,0,88,96))
 
                                           ])
 
 
 
+
     def forward(self, X):
 
-        X= torch.stack([ self.img(x) for x in X])
+        ln = [self.img(x) for x in X]
+        for x in ln:
+            print(x.shape)
+        X= torch.stack(ln)
+        print(X.shape)
+
 
         y = self.net(X)
+        print(y)
+        exit()
         return y
 
 
@@ -114,10 +122,13 @@ class ImageDQN(torch.nn.Module):
 
 
 def policy(new_obs):
+    global EPSILON
     if random.uniform(0, 1) < EPSILON:
         return random.randint(0, ACT_RANGE - 1)
     with torch.no_grad():
         val = agt(new_obs).unsqueeze(0)
+        print(val)
+        exit()
         return int(torch.argmax(val).numpy())
 
 def save_model():
@@ -156,7 +167,8 @@ def learn():
     action = torch.tensor(action).unsqueeze(1)
     reward = torch.tensor(reward)
 
-
+    print(old_obs.shape)
+    exit()
 
 
 
@@ -258,22 +270,24 @@ env = gym.make("CarRacing-v2", continuous=False)
 new_obs = env.reset()
 
 
+
+
 done=False
 
 
 #Fast start
-for i in range(100):
-    old_obs = new_obs
-    action = dict_choice['z']
+# for i in range(100):
+#     old_obs = new_obs
+#     action = dict_choice['z']
 
-    old_obs = new_obs
+#     old_obs = new_obs
 
-    new_obs, reward, done, info = env.step(action)
+#     new_obs, reward, done, info = env.step(action)
 
-    agent_step(old_obs, action, new_obs, reward)
+#     agent_step(old_obs, action, new_obs, reward)
 
-    if done:
-        env.reset()
+#     if done:
+#         env.reset()
 
 
 
