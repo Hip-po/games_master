@@ -1,6 +1,6 @@
 # GAMES MASTER
 
-This is a Lewagon final project, with [Camila-mallmann](https://github.com/Camila-mallmann), [abdl242](https://github.com/abdl242) and [myself](https://github.com/Hip-po)
+This is a [Lewagon](https://www.lewagon.com) final project, with [Camila-mallmann](https://github.com/Camila-mallmann), [abdl242](https://github.com/abdl242) and [myself](https://github.com/Hip-po)
 
 ## The project
 
