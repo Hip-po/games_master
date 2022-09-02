@@ -22,7 +22,7 @@ class Configuration:
         self.CONTINUOUS = False
         self.GRAPH=False
 
-        self.PATH_MODEL = f"model/model_car_racing_{self.CONTINUOUS}_v2.pt"
+        self.PATH_MODEL = f"""model/model_car_racing_{"discret" if not self.CONTINUOUS else "cont"}_v2.pt"""
 
         self.GAMMA = 0.98
         self.EPSILON = 0.5
