@@ -1,5 +1,5 @@
 import gym
-env = gym.make("CarRacing-v2",domain_randomize=True)
+env = gym.make("CarRacing-v2")
 env.reset(options={"randomize": False})
 
 for _ in range(1000):
