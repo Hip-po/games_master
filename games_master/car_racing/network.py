@@ -25,42 +25,11 @@ class ImageDQN(torch.nn.Module):
             torch.nn.Linear(1024, 5),
         )
         self.img = tv.transforms.Compose([tv.transforms.ToTensor(),
-                                            tv.transforms.Grayscale(),
+                                          tv.transforms.Grayscale(),
                                           tv.Lambda(lambda x: tv.functional.crop(x, 0, 0, 88, 96))
-
                                           ])
 
     def forward(self, X):
-
-
-
-        # X = self.img(X)
-        # X = X.detach().to("cpu").numpy()
-        # X=X.T
-
-        # plt.ioff()
-        # plt.imshow(X)
-        # plt.show()
-
-
-
         X = torch.stack([self.img(x) for x in X])
-
-
-
         y = self.net(X)
-
         return y
-
-  # ln =[x for x in X]
-        # print(len(ln))
-        # exit()
-
-        # for l in ln :
-        #     print('zfrf')
-        #     print(l.shape)
-
-        # print(type(X))
-        # plt.ioff()
-        # plt.imshow(X)
-        # plt.show()

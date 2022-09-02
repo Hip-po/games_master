@@ -34,8 +34,6 @@ class ImageDQNagent():
         self.BUFFER.append((old_obs, action, new_obs, reward))
 
         if len(self.BUFFER) >= CFG.BATCH_SIZE and self.iter % CFG.BATCH_SIZE == 0:
-            # print("learn")
-            # exit()
             self.learn()
 
         if self.iter % CFG.SAVE_MODEL_FREQ == 0:
@@ -52,17 +50,13 @@ class ImageDQNagent():
 
     def learn(self):
         batch = random.sample(self.BUFFER, CFG.BATCH_SIZE)
-        self.old_obs, action, self.new_obs, reward = zip(*batch)
-
-        # print(old_obs.shape)
-        # exit()
+        old_obs, action, new_obs, reward = zip(*batch)
 
         action = torch.tensor(action).unsqueeze(1)
         reward = torch.tensor(reward)
 
-        y_pred = torch.gather(self.agt(self.old_obs), 1, action).squeeze(1)
-
-        y_true = reward + self.tgt(self.new_obs).max(1)[0] * CFG.GAMMA
+        y_pred = torch.gather(self.agt(old_obs), 1, action).squeeze(1)
+        y_true = reward + self.tgt(new_obs).max(1)[0] * CFG.GAMMA
 
         loss = torch.square(y_true - y_pred)
 
@@ -76,21 +70,5 @@ class ImageDQNagent():
         if random.uniform(0, 1) < CFG.EPSILON:
             return random.randint(0, CFG.ACT_RANGE - 1)
         with torch.no_grad():
-
-            while self.iter<128:
-                return 3
-
-
-
-            # print(len(self.new_obs))
-            # exit()
-            print(type(self.new_obs))
-            print(len(self.new_obs))
-            print(self.agt(self.new_obs).shape)
-            print(torch.argmax(self.agt(self.new_obs)))
-            print(torch.argmax(self.agt(self.new_obs).unsqueeze(0)))
-            print(torch.argmax(self.agt(self.new_obs).unsqueeze(0)).numpy())
-            exit()
-            val = self.agt(self.new_obs).unsqueeze(0)
-
+            val = self.agt(np.expand_dims(new_obs, 0))
             return int(torch.argmax(val).numpy())
