@@ -1,6 +1,7 @@
 from config import CFG
 import gym
 
+
 def manual(env, agt):
     for _ in range(100):
         old_obs = new_obs

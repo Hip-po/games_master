@@ -3,7 +3,8 @@ from config import CFG
 from colorama import Fore, Style
 from network import ImageDQN
 
-def save_model(agt):
+
+def save_model(agt, EPSILON):
     state = {
         "EPSILON": EPSILON,
         'state_dict': agt.state_dict()
@@ -19,4 +20,4 @@ def load_model():
     model.load_state_dict(state['state_dict'])
     EPSILON = state["EPSILON"]
     print(Fore.BLUE + "\nLoad model\n" + Style.RESET_ALL)
-    return model
+    return model, EPSILON

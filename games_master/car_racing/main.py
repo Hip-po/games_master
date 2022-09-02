@@ -9,6 +9,6 @@ agt = ImageDQNagent()
 env = get_env()
 
 if CFG.MANUAL:
-    manual(env,agt)
+    manual(env, agt)
 
-run_env(env,agt)
+run_env(env, agt)

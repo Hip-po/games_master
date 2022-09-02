@@ -3,7 +3,7 @@ import torch
 import collections
 import numpy as np
 from config import CFG
-from save_load import save_model,load_model
+from save_load import save_model, load_model
 from network import ImageDQN
 from graph import draw_graph
 import os
@@ -13,56 +13,42 @@ class ImageDQNagent():
     def __init__(self):
         self.BUFFER = collections.deque(maxlen=10000)
         if os.path.exists(CFG.PATH_MODEL):
-            self.agt = load_model()
-            self.tgt = load_model()
+            self.agt, self.epsilon_old = load_model()
+            self.tgt, self.epsilon_old = load_model()
         else:
             self.agt = ImageDQN()
             self.tgt = ImageDQN()
+            self.epsilon_old = 1
         self.opt = torch.optim.Adam(self.agt.net.parameters(), lr=0.0001)
-        self.graph=draw_graph()
-        self.iter=0
+        self.graph = draw_graph()
+        self.iter = 0
 
-
-
-
-
-
-    def agent_step(self,old_obs, action, new_obs, reward):
+    def agent_step(self, old_obs, action, new_obs, reward):
         self.iter += 1
-
 
         self.BUFFER.append((old_obs, action, new_obs, reward))
 
         if len(self.BUFFER) >= CFG.BATCH_SIZE and self.iter % CFG.BATCH_SIZE == 0:
-            # print("learn")
-            # exit()
             self.learn()
 
         if self.iter % CFG.SAVE_MODEL_FREQ == 0:
-            save_model()
+            save_model(self.agt, self.epsilon)
 
         if self.iter % CFG.TARGET_FREQ == 0:
             self.tgt.load_state_dict(self.agt.state_dict())
 
-        if not os.path.exists(CFG.PATH_MODEL):
-            eps = np.exp((-self.iter - 0.15)*0.00005)
-        self.epsilon = eps if eps > CFG.MIN_EPSILON else CFG.MIN_EPSILON
-
-
+        eps = np.exp((-self.iter - 0.15) * 0.00005)
+        self.epsilon = max(min(eps, self.epsilon_old), CFG.MIN_EPSILON)
 
     def learn(self):
         batch = random.sample(self.BUFFER, CFG.BATCH_SIZE)
-        self.old_obs, action, self.new_obs, reward = zip(*batch)
-
-        # print(old_obs.shape)
-        # exit()
+        old_obs, action, new_obs, reward = zip(*batch)
 
         action = torch.tensor(action).unsqueeze(1)
         reward = torch.tensor(reward)
 
-        y_pred = torch.gather(self.agt(self.old_obs), 1, action).squeeze(1)
-
-        y_true = reward + self.tgt(self.new_obs).max(1)[0] * CFG.GAMMA
+        y_pred = torch.gather(self.agt(old_obs), 1, action).squeeze(1)
+        y_true = reward + self.tgt(new_obs).max(1)[0] * CFG.GAMMA
 
         loss = torch.square(y_true - y_pred)
 
@@ -72,25 +58,9 @@ class ImageDQNagent():
         loss.sum().backward()
         self.opt.step()
 
-    def policy(self,new_obs):
+    def policy(self, new_obs):
         if random.uniform(0, 1) < CFG.EPSILON:
             return random.randint(0, CFG.ACT_RANGE - 1)
         with torch.no_grad():
-
-            while self.iter<128:
-                return 3
-
-
-
-            # print(len(self.new_obs))
-            # exit()
-            print(type(self.new_obs))
-            print(len(self.new_obs))
-            print(self.agt(self.new_obs).shape)
-            print(torch.argmax(self.agt(self.new_obs)))
-            print(torch.argmax(self.agt(self.new_obs).unsqueeze(0)))
-            print(torch.argmax(self.agt(self.new_obs).unsqueeze(0)).numpy())
-            exit()
-            val = self.agt(self.new_obs).unsqueeze(0)
-
+            val = self.agt(np.expand_dims(new_obs, 0))
             return int(torch.argmax(val).numpy())
