@@ -8,3 +8,4 @@ matplotlib
 stable-baselines3
 opencv-python
 tkinter
+itertools

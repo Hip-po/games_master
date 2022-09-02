@@ -4,29 +4,26 @@ import time
 import random
 import matplotlib.pyplot as plt
 
-def run():
-    env = gym.make('ppaquette/SuperMarioBros-1-1-Tiles-v0')
 
-    state=env.reset()
-    index=0
-    while True:
-        index += 1
-        act=[0, 0, 0, 1, 0, 0]
-        udx=random.randint(0,5)
-        if udx != 1 :
-            act[udx]=1
+env = gym.make('ppaquette/SuperMarioBros-1-1-Tiles-v0')
 
-        state, reward, done, info = env.step(act)
-        print(state.shape)
-        # if index % 25 ==0:
-        #     plt.imshow(state)
-        #     plt.show()
-        time.sleep(0.02)
+state=env.reset()
+index=0
+while True:
+    index += 1
+    act=[0, 0, 0, 1, 0, 0]
+    udx=random.randint(0,5)
+    if udx != 1 :
+        act[udx]=1
 
-        if done:
-            env.reset()
+    state, reward, done, info = env.step(act)
+    print(state.shape)
+    # if index % 25 ==0:
+    #     plt.imshow(state)
+    #     plt.show()
+    time.sleep(0.02)
 
-    env.close()
+    if done:
+        env.reset()
 
-if __name__=="__main__":
-    run()
+env.close()

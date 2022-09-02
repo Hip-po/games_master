@@ -17,17 +17,17 @@ class Configuration:
         User-defined configuration init. Mandatory to properly set all configuration parameters.
         """
 
-        self.PATH_MODEL = "model/model_car_racing_v2.pt"
-
         self.MANUAL = False
         self.GRAYSCALE = True
-        self.CONTINUOUS = False
+        self.CONTINUOUS = True
         self.GRAPH=False
+
+        self.PATH_MODEL = f"""model/model_car_racing_{"discret" if not self.CONTINUOUS else "cont"}_v2.pt"""
 
         self.GAMMA = 0.98
         self.EPSILON = 0.5
         self.MIN_EPSILON = 0.01
-        self.ACT_RANGE = 5
+        self.ACT_RANGE = 5 if not CFG.CONTINUOUS else 2000
         self.BATCH_SIZE = 128
         self.TARGET_FREQ = 1000
         self.SAVE_MODEL_FREQ = 10000
