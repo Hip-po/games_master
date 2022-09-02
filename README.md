@@ -31,6 +31,3 @@ TODO :
 
 TODO :
 
-#### A3C
-
-TODO :
