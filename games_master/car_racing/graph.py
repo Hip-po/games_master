@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 
+
 class draw_graph():
     def __init__(self):
         plt.ion()
@@ -18,10 +19,10 @@ class draw_graph():
         self.frame_step = []
         self.reward_evolution = []
 
-        self.iter=0
+        self.iter = 0
 
     def draw(self, loss, reward):
-        self.iter+=1
+        self.iter += 1
         self.loss_evolution.append(float(loss.sum().detach().numpy()))
         self.reward_evolution.append(float(reward.sum().detach().numpy()))
         self.frame_step.append(self.iter)
