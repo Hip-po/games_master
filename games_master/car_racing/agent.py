@@ -13,11 +13,12 @@ class ImageDQNagent():
     def __init__(self):
         self.BUFFER = collections.deque(maxlen=10000)
         if os.path.exists(CFG.PATH_MODEL):
-            self.agt = load_model()
-            self.tgt = load_model()
+            self.agt,self.epsilon_old = load_model()
+            self.tgt,self.epsilon_old = load_model()
         else:
             self.agt = ImageDQN()
             self.tgt = ImageDQN()
+            self.epsilon_old=1
         self.opt = torch.optim.Adam(self.agt.net.parameters(), lr=0.0001)
         self.graph=draw_graph()
         self.iter=0
@@ -37,14 +38,14 @@ class ImageDQNagent():
             self.learn()
 
         if self.iter % CFG.SAVE_MODEL_FREQ == 0:
-            save_model()
+            save_model(self.agt,self.epsilon)
 
         if self.iter % CFG.TARGET_FREQ == 0:
             self.tgt.load_state_dict(self.agt.state_dict())
 
-        if not os.path.exists(CFG.PATH_MODEL):
-            eps = np.exp((-self.iter - 0.15)*0.00005)
-        self.epsilon = eps if eps > CFG.MIN_EPSILON else CFG.MIN_EPSILON
+
+        eps = np.exp((-self.iter - 0.15)*0.00005)
+        self.epsilon = max(min(eps,self.epsilon_old) ,CFG.MIN_EPSILON)
 
 
 
