@@ -19,7 +19,7 @@ class Configuration:
 
         self.MANUAL = False
         self.GRAYSCALE = True
-        self.CONTINUOUS = False
+        self.CONTINUOUS = True
         self.GRAPH=False
 
         self.PATH_MODEL = f"""model/model_car_racing_{"discret" if not self.CONTINUOUS else "cont"}_v2.pt"""
@@ -27,7 +27,7 @@ class Configuration:
         self.GAMMA = 0.98
         self.EPSILON = 0.5
         self.MIN_EPSILON = 0.01
-        self.ACT_RANGE = 5
+        self.ACT_RANGE = 5 if not CFG.CONTINUOUS else 2000
         self.BATCH_SIZE = 128
         self.TARGET_FREQ = 1000
         self.SAVE_MODEL_FREQ = 10000

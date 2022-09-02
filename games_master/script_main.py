@@ -275,7 +275,9 @@ while True:
     action = policy(new_obs)
 
     old_obs = new_obs
-
+    print(agt(new_obs.unsqueeze(0)))
+    print(int(torch.argmax(agt(new_obs.unsqueeze(0))).numpy()))
+    print(env.action_space)
     new_obs, reward, done, info = env.step(action)
     agent_step(old_obs, action, new_obs, reward)
 

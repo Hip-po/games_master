@@ -22,7 +22,7 @@ class ImageDQN(torch.nn.Module):
             torch.nn.Flatten(start_dim=1),
             torch.nn.Linear(20*483, 1024),
             torch.nn.ReLU(inplace=True),
-            torch.nn.Linear(1024, 5),
+            torch.nn.Linear(1024, 5 if not CFG.CONTINUOUS else 2000),
         )
         self.img = tv.transforms.Compose([tv.transforms.ToTensor(),
                                           tv.transforms.Grayscale(),
