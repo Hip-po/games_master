@@ -4,13 +4,19 @@ This is a Lewagon final project, with [Camila-mallmann](https://github.com/Camil
 
 ## The project
 
-The goal is to create an AI that learns to play differences gym using Reinforcement Learning, we stated with the gym car racing.
+The goal is to create an AI that learns from nothing how to play different gyms using Reinforcement Learning.
 
-## racing car
+We decided to start with an easy rac car game to understand and master RL theory and pytorch.
 
-this game is quite simple, you have a car and a track and the car should complete the entire track in minimum time to maximize reward.
+Then we will apply our new knowledges on other games.
 
-for that we created different model
+## Racing car
+
+This game is pretty simple. All the AI has to do is to follow a race track.
+
+As long as the car follow the roads, it betters its reward. But if it does nothing or goes off track, the score is penalized.
+
+To reach the best possible score, we tried different model and way to make our AI learn.
 
 
 ### discreet values:
