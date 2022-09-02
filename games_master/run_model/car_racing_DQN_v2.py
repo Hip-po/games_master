@@ -3,7 +3,7 @@ import torch
 from colorama import Fore, Style
 import torchvision.transforms as tv
 import numpy as np
-import time
+
 
 
 def run():

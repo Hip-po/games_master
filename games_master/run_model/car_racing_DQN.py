@@ -1,7 +1,6 @@
 import gym
 import torch
 from colorama import Fore, Style
-import time
 
 
 def run():
@@ -52,8 +51,6 @@ def run():
     new_obs = parse_obs(env.reset())
 
     while True:
-        if ONE_TRACK:
-            start = time.time()
 
         action = policy(new_obs)
 
@@ -67,8 +64,6 @@ def run():
         if done:
             env.reset()
             if ONE_TRACK:
-                end = time.time()
-                a=end-start
                 break
     return TOTAL_RWD
 
