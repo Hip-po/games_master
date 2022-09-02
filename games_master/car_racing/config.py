@@ -17,12 +17,12 @@ class Configuration:
         User-defined configuration init. Mandatory to properly set all configuration parameters.
         """
 
-        self.PATH_MODEL = "model/model_car_racing_v2.pt"
-
         self.MANUAL = False
         self.GRAYSCALE = True
         self.CONTINUOUS = False
         self.GRAPH=False
+
+        self.PATH_MODEL = f"model/model_car_racing_{self.CONTINUOUS}_v2.pt"
 
         self.GAMMA = 0.98
         self.EPSILON = 0.5
