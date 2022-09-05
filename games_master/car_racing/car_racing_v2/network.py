@@ -24,8 +24,14 @@ class ImageDQN(torch.nn.Module):
             torch.nn.ReLU(inplace=True),
             torch.nn.Linear(1024, 5 if not CFG.CONTINUOUS else 2000),
         )
-        self.img = tv.transforms.Compose([tv.transforms.ToTensor(),
+
+        if CFG.GRAYSCALE:
+            self.img = tv.transforms.Compose([tv.transforms.ToTensor(),
                                           tv.transforms.Grayscale(),
+                                          tv.Lambda(lambda x: tv.functional.crop(x, 0, 0, 88, 96))
+                                          ])
+        else:
+            self.img = tv.transforms.Compose([tv.transforms.ToTensor(),
                                           tv.Lambda(lambda x: tv.functional.crop(x, 0, 0, 88, 96))
                                           ])
 
