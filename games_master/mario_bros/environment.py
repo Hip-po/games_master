@@ -37,31 +37,34 @@ def run_env(env, agent):
         #calcul reward
 
         if done :
-            if info['flag_get']:
-                reward += 350.0
+            if "flag_get" in info:
+                reward= 200
+            elif info["time"]==0:
+                reward= 0
             else:
-                reward -= 50.0
-        elif last_distance_max<info["distance"] :
-            reward=info["distance"]-last_distance_max
-            last_distance_max=info["distance"]
+                reward = -25
+        elif last_distance_max<int(info["distance"]) :
+            reward=int(info["distance"])-last_distance_max
+            last_distance_max=int(info["distance"])
             pas_bouger=0
-        elif last_distance==info["distance"]:
+        elif last_distance==int(info["distance"]):
+            if pas_bouger>=5:
+                reward=-0.005*pas_bouger
+            else:
+                reward=0
             pas_bouger+=1
-            reward=0
         else:
             pas_bouger=0
             reward=0
 
-        if pas_bouger >= 6 :
-            reward=-0.01*pas_bouger
-            pas_bouger+=1
-
-        if old_score<info["score"]:
+        if old_score<info["score"]/10:
             reward+=(info["score"]/10)-old_score
-
+            old_score=info["score"]/10
 
         last_distance=info["distance"]
 
+        # print(reward)
+        # time.sleep(0.05)
 
         agent.agent_step(old_obs, action, new_obs, reward)
 
