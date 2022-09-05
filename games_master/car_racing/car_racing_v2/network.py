@@ -3,7 +3,7 @@ import torchvision.transforms as tv
 import numpy as np
 import matplotlib.pyplot as plt
 
-from games_master.car_racing_v2.config import CFG
+from config import CFG
 
 
 class ImageDQN(torch.nn.Module):

@@ -1,8 +1,8 @@
 from agent import *
 import environment as en
-from games_master.car_racing_v2.config import CFG
+from config import CFG
 from manual import manual
-import games_master.car_racing_v2.continuous as ct
+import continuous as ct
 
 CFG.init()
 
