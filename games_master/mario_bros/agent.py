@@ -10,7 +10,7 @@ import os
 
 class ImageDQNagent():
     def __init__(self):
-        self.BUFFER = collections.deque(maxlen=10000)
+        self.BUFFER = collections.deque(maxlen=500000)
         if os.path.exists(CFG.PATH_MODEL):
             self.agt, self.epsilon_old = load_model()
             self.tgt, self.epsilon_old = load_model()
