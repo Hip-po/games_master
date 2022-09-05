@@ -11,16 +11,16 @@ state=env.reset()
 
 while True:
     act=[0, 0, 0, 0, 0, 0]
-    # udx=random.randint(0,5)
-    # if udx != 1 :
-    #     act[udx]=1
+    udx=random.randint(0,5)
+    if udx != 1 :
+        act[udx]=1
 
     state, reward, done, info = env.step(act)
     # if index % 25 ==0:
     #     print(state)
     #     plt.imshow(state)
     #     plt.show()
-    print(info)
+    time.sleep(0.05)
 
     if done:
         env.reset()

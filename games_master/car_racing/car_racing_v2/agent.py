@@ -52,6 +52,8 @@ class ImageDQNagent():
 
         loss = torch.square(y_true - y_pred)
 
+        print(loss.sum())
+
         self.graph.draw(loss, reward)
 
         self.opt.zero_grad()

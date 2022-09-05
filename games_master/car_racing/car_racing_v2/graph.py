@@ -26,7 +26,6 @@ class draw_graph():
         self.loss_evolution.append(float(loss.sum().detach().numpy()))
         self.reward_evolution.append(float(reward.sum().detach().numpy()))
         self.frame_step.append(self.iter)
-        print(self.reward_evolution)
 
         # LOSS
         if len(self.loss_evolution) < 20:
