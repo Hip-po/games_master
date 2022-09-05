@@ -1,4 +1,4 @@
-from games_master.car_racing_v2.config import CFG
+from config import CFG
 import gym
 import numpy as np
 import torch
