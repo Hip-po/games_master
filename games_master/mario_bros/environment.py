@@ -3,6 +3,7 @@ from distutils.log import info
 import gym
 from config import CFG
 import numpy as np
+from colorama import Fore, Style
 import time
 
 def get_env():
@@ -24,6 +25,8 @@ def run_env(env, agent):
     last_distance=40
     pas_bouger=0
     old_score=0
+    index=0
+    first=True
 
 
     while True:
@@ -63,12 +66,19 @@ def run_env(env, agent):
 
         last_distance=info["distance"]
 
-        # print(reward)
-        # time.sleep(0.05)
+        if index%100==0:
+            print(Fore.RED + "RECORD" + Style.RESET_ALL)
+            time.sleep(0.05)
+        elif first:
+            print(Fore.GREEN + index + Style.RESET_ALL)
 
         agent.agent_step(old_obs, action, new_obs, reward)
 
+        first=False
+
         if done:
+            first=True
+            index+=1
             last_distance_max=40
             last_distance=40
             pas_bouger=0
