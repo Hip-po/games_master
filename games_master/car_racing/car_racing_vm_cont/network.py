@@ -20,7 +20,7 @@ class ImageDQN(torch.nn.Module):
             torch.nn.MaxPool2d(2),
             torch.nn.ReLU(inplace=True),
             torch.nn.Flatten(start_dim=1),
-            torch.nn.Linear(20*483, 1024),
+            torch.nn.Linear(20*529, 1024),
             torch.nn.ReLU(inplace=True),
             torch.nn.Linear(1024, 5 if not CFG.CONTINUOUS else 2000),
         )
@@ -32,7 +32,7 @@ class ImageDQN(torch.nn.Module):
                                           ])
         else:
             self.img = tv.transforms.Compose([tv.transforms.ToTensor(),
-                                          tv.Lambda(lambda x: tv.functional.crop(x, 0, 0, 88, 96))
+                                          #tv.Lambda(lambda x: tv.functional.crop(x, 0, 0, 88, 96))
                                           ])
 
     def forward(self, X):
