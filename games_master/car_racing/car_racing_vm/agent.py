@@ -5,12 +5,13 @@ import numpy as np
 from config import CFG
 from save_load import save_model, load_model
 from network import ImageDQN
+from graph import draw_graph
 import os
 
 
 class ImageDQNagent():
     def __init__(self):
-        self.BUFFER = collections.deque(maxlen=500000)
+        self.BUFFER = collections.deque(maxlen=10000)
         if os.path.exists(CFG.PATH_MODEL):
             self.agt, self.epsilon_old = load_model()
             self.tgt, self.epsilon_old = load_model()
@@ -19,6 +20,7 @@ class ImageDQNagent():
             self.tgt = ImageDQN()
             self.epsilon_old = 1
         self.opt = torch.optim.Adam(self.agt.net.parameters(), lr=0.0001)
+        #self.graph = draw_graph()
         self.iter = 0
 
     def agent_step(self, old_obs, action, new_obs, reward):
@@ -35,7 +37,7 @@ class ImageDQNagent():
         if self.iter % CFG.TARGET_FREQ == 0:
             self.tgt.load_state_dict(self.agt.state_dict())
 
-        eps = np.exp((-self.iter - 0.15) * 0.000005)
+        eps = np.exp((-self.iter - 0.15) * 0.00005)
         self.epsilon = max(min(eps, self.epsilon_old), CFG.MIN_EPSILON)
 
     def learn(self):
@@ -50,16 +52,17 @@ class ImageDQNagent():
 
         loss = torch.square(y_true - y_pred)
 
-        print(loss.sum(), int(self.epsilon*100))
+        print(loss.sum())
+
+        #self.graph.draw(loss, reward)
 
         self.opt.zero_grad()
         loss.sum().backward()
         self.opt.step()
 
     def policy(self, new_obs):
-
         if random.uniform(0, 1) < CFG.EPSILON:
-            return random.randint(0, len(CFG.ACT_DICT) - 1)
+            return random.randint(0, CFG.ACT_RANGE - 1)
         with torch.no_grad():
             val = self.agt(np.expand_dims(new_obs, 0))
             return int(torch.argmax(val).numpy())
