@@ -28,6 +28,8 @@ However, if he stays at the same place or goes off track, he will get penalized 
 
 From the beginning, it will choose randomly an action but the more it is learning the less it will do it.
 
+### <img src="GIF\nathan_driving.gif" width="450px">
+
 
 
 ### discreet values:
