@@ -1,12 +1,12 @@
 # data science
 numpy
 colorama
-gym[box2d]
+# gym[box2d]
 torch
 torchvision
 matplotlib
 stable-baselines3
-opencv-python
-tkinter
+# opencv-python
+# tkinter
 itertools
 pandas
