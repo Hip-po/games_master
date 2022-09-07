@@ -24,8 +24,8 @@ class ImageDQNagent():
     def agent_step(self, old_obs, action, new_obs, reward):
         self.iter += 1
 
-        new_obs= new_obs.unsqueeze(0).float()
-        old_obs= old_obs.unsqueeze(0).float()
+        new_obs= new_obs.float()
+        old_obs= old_obs.float()
 
         self.BUFFER.append((old_obs, action, new_obs, reward))
 

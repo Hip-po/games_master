@@ -25,7 +25,7 @@ def get_env():
     game.set_render_messages(False)
     game.set_render_corpses(False)
 
-    game.set_window_visible(True)
+    game.set_window_visible(False)
 
     game.init()
 
