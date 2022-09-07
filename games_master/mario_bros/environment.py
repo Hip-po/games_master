@@ -69,8 +69,8 @@ def run_env(env, agent):
         # if index%100==0:
         #     print(Fore.RED + "RECORD" + Style.RESET_ALL)
         #     time.sleep(0.05)
-        # elif first:
-        #     print(Fore.GREEN + str(index) + Style.RESET_ALL)
+        if first:
+            print(Fore.GREEN + str(index) + Style.RESET_ALL)
 
         agent.agent_step(old_obs, action, new_obs, reward)
 

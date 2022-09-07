@@ -35,7 +35,7 @@ class ImageDQNagent():
         if self.iter % CFG.TARGET_FREQ == 0:
             self.tgt.load_state_dict(self.agt.state_dict())
 
-        eps = np.exp((-self.iter - 0.15) * 0.000005)
+        eps = np.exp((-self.iter - 0.15) * 0.00005)
         self.epsilon = max(min(eps, self.epsilon_old), CFG.MIN_EPSILON)
 
     def learn(self):
