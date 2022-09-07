@@ -20,9 +20,9 @@ class Configuration:
         self.EPSILON = 0.5
         self.MIN_EPSILON = 0.01
         self.ACT_RANGE = 14
-        self.BATCH_SIZE = 32
+        self.BATCH_SIZE = 16
         self.TARGET_FREQ = 1000
-        self.SAVE_MODEL_FREQ = 10000
+        self.SAVE_MODEL_FREQ = 16
         self.SCENARIO="deadly_corridor"
 
         self.ACT_DICT = {
