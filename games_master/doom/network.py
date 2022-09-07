@@ -40,7 +40,7 @@ class ImageDQN(torch.nn.Module):
             torch.nn.ReLU(inplace=True),
             torch.nn.MaxPool2d(2),
             torch.nn.Flatten(start_dim=1),
-            torch.nn.Linear(36192, 64),
+            torch.nn.Linear(6080, 64),
             torch.nn.ReLU(inplace=True),
             torch.nn.Linear(64, CFG.ACT_RANGE),
         )
