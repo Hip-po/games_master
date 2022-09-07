@@ -5,7 +5,7 @@ import random
 import numpy as np
 import collections
 from colorama import Fore, Style
-import pandas as pd
+#import pandas as pd
 import os
 
 PATH_MODEL = "model/model_car_racing_QDNinvm.pt"
