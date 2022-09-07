@@ -20,9 +20,10 @@ class Configuration:
         self.MANUAL = False
         self.GRAYSCALE = False
         self.CONTINUOUS = True
+        self.VM=True
         self.GRAPH=False
 
-        self.PATH_MODEL = f"""model/model_car_racing_{"discret" if not self.CONTINUOUS else "cont"}_{'preprocessed' if self.GRAYSCALE else 'RAW'}_v2.pt"""
+        self.PATH_MODEL = f"""model/model_car_racing_{"discret" if not self.CONTINUOUS else "cont"}_{'preprocessed' if self.GRAYSCALE else 'RAW'}_v2new.pt"""
 
         self.GAMMA = 0.98
         self.EPSILON = 0.5

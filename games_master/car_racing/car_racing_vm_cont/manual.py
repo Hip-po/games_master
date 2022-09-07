@@ -68,7 +68,7 @@ def manual(env, agt):
                     if done:
                         env.reset()
 
-        #env.render()
+        env.render()
 
         if done:
             env.reset()

@@ -26,7 +26,8 @@ def run_env(env, agent):
         new_obs, reward, done, _ = env.step(action)
         agent.agent_step(old_obs, action, new_obs, reward)
 
-        #env.render()
+        if not CFG.VM:
+            env.render()
 
         if done:
             env.reset()

@@ -36,6 +36,7 @@ class ImageDQN(torch.nn.Module):
                                           ])
 
     def forward(self, X):
-        X = torch.stack([self.img(x) for x in X])
+        #X = torch.stack([self.img(x) for x in X])
+        X = torch.stack([torch.permute(torch.tensor(x, dtype=torch.float), (2, 0, 1)) for x in X])
         y = self.net(X)
         return y

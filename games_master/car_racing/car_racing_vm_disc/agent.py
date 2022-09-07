@@ -52,7 +52,7 @@ class ImageDQNagent():
 
         loss = torch.square(y_true - y_pred)
 
-        print(loss.sum())
+        print(loss.sum(), self.epsilon)
 
         #self.graph.draw(loss, reward)
 

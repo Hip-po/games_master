@@ -30,7 +30,8 @@ def run_env(env, agent):
         #new_obs = parse_obs(new_obs)
         agent.agent_step(old_obs, action, new_obs, reward)
 
-        #env.render()
+        if not CFG.VM:
+            env.render()
 
         if done:
             env.reset()

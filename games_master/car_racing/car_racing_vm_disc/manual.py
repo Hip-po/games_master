@@ -68,7 +68,8 @@ def manual(env, agt):
                     if done:
                         env.reset()
 
-        #env.render()
+        if not CFG.VM:
+            env.render()
 
         if done:
             env.reset()
