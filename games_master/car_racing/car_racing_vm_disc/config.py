@@ -23,7 +23,7 @@ class Configuration:
         self.VM=True
         self.GRAPH=False
 
-        self.PATH_MODEL = f"""model/model_car_racing_{"discret" if not self.CONTINUOUS else "cont"}_{'preprocessed' if self.GRAYSCALE else 'RAW'}_v2new.pt"""
+        self.PATH_MODEL = f"""model/model_car_racing_{"discret" if not self.CONTINUOUS else "cont"}_{'preprocessed' if self.GRAYSCALE else 'RAW'}_v2newfixedLR.pt"""
 
         self.GAMMA = 0.98
         self.EPSILON = 0.5
