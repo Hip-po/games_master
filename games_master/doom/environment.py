@@ -13,7 +13,8 @@ def get_env():
     game.load_config(os.path.join(vzd.scenarios_path, f"{CFG.SCENARIO}.cfg"))
     game.set_doom_scenario_path(os.path.join(vzd.scenarios_path, f"{CFG.SCENARIO}.wad"))
     game.set_doom_map("map01")
-    game.set_screen_resolution(vzd.ScreenResolution.RES_640X480)
+    game.set_screen_resolution(vzd.ScreenResolution.RES_320X180)
+    game.set_screen_format(vzd.ScreenFormat.CBCGCR)
 
     game.set_depth_buffer_enabled(True)
     game.set_labels_buffer_enabled(True)
@@ -25,7 +26,7 @@ def get_env():
     game.set_render_messages(False)
     game.set_render_corpses(False)
 
-    game.set_window_visible(False)
+    game.set_window_visible(True)
 
     game.init()
 

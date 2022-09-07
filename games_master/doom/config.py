@@ -22,7 +22,7 @@ class Configuration:
         self.ACT_RANGE = 14
         self.BATCH_SIZE = 16
         self.TARGET_FREQ = 1000
-        self.SAVE_MODEL_FREQ = 16
+        self.SAVE_MODEL_FREQ = 5000
         self.SCENARIO="deadly_corridor"
 
         self.ACT_DICT = {
