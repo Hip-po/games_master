@@ -39,9 +39,21 @@ def run_env(env, agent):
     Run a given environment with a given agent.
     """
 
+    env.new_episode()
+
+    state = env.get_state()
+
+    screen_buf = torch.tensor(state.screen_buffer)
+    depth_buf = torch.tensor(np.expand_dims(state.depth_buffer, axis=0))
+    labels_buf = torch.tensor(np.expand_dims(state.labels_buffer, axis=0))
+
+    new_obs=torch.cat([screen_buf,depth_buf,labels_buf])
+
     while True:
 
-        env.new_episode()
+        action = agent.policy(new_obs)
+
+        old_obs=new_obs
 
         state = env.get_state()
 
@@ -51,20 +63,9 @@ def run_env(env, agent):
 
         new_obs=torch.cat([screen_buf,depth_buf,labels_buf])
 
-        while not env.is_episode_finished():
+        reward = env.make_action(CFG.ACT_DICT[action])
 
-            action = agent.policy(new_obs)
+        agent.agent_step(old_obs, action, new_obs, reward)
 
-            old_obs=new_obs
-
-            state = env.get_state()
-
-            screen_buf = torch.tensor(state.screen_buffer)
-            depth_buf = torch.tensor(np.expand_dims(state.depth_buffer, axis=0))
-            labels_buf = torch.tensor(np.expand_dims(state.labels_buffer, axis=0))
-
-            new_obs=torch.cat([screen_buf,depth_buf,labels_buf])
-
-            reward = env.make_action(CFG.ACT_DICT[action])
-
-            agent.agent_step(old_obs, action, new_obs, reward)
+        if  env.is_episode_finished():
+            env.new_episode()
