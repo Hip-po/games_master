@@ -3,6 +3,7 @@ import numpy as np
 from config import CFG
 import torch
 import os
+import psutil
 
 def get_env():
     """
@@ -33,7 +34,7 @@ def get_env():
     return game
 
 
-
+# @psutil.profile
 def run_env(env, agent):
     """
     Run a given environment with a given agent.
@@ -68,4 +69,5 @@ def run_env(env, agent):
         agent.agent_step(old_obs, action, new_obs, reward)
 
         if  env.is_episode_finished():
-            env.new_episode()
+            env.close()
+            env=get_env()
