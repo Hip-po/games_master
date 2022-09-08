@@ -69,3 +69,6 @@ class ImageDQNagent():
         with torch.no_grad():
             val = self.agt(new_obs)
             return int(torch.argmax(val).numpy())
+
+    def agent_save(self):
+        save_model(self.agt, self.epsilon)

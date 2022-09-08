@@ -73,4 +73,4 @@ def run_env(env, agent):
             state=None
             env=get_env()
 
-    save_load.save_model(agent)
+    agent.agent_save()
