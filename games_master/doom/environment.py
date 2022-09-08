@@ -3,7 +3,7 @@ import numpy as np
 from config import CFG
 import torch
 import os
-import psutil
+import save_load
 
 def get_env():
     """
@@ -34,7 +34,6 @@ def get_env():
     return game
 
 
-# @psutil.profile
 def run_env(env, agent):
     """
     Run a given environment with a given agent.
@@ -50,7 +49,7 @@ def run_env(env, agent):
 
     new_obs=torch.cat([screen_buf,depth_buf,labels_buf])
 
-    while True:
+    for _ in range(100):
 
         action = agent.policy(new_obs)
 
@@ -68,6 +67,10 @@ def run_env(env, agent):
 
         agent.agent_step(old_obs, action, new_obs, reward)
 
+
         if  env.is_episode_finished():
             env.close()
+            state=None
             env=get_env()
+
+    save_load.save_model(agent)
