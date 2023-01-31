@@ -43,18 +43,6 @@ The model choose one action from the 5 available and get rewarded or penalized.
 
 ### <img src="GIF\car_racing_dqn_discret_v1.gif" width="450px">
 
-#### A3C
-
-TODO :
-
-### continues values:
-
-
-#### Deep-Q Network
-
-TODO :
-
-
 ## Mario Bros
 
 Everyone knows Mario Bros except our agent.
