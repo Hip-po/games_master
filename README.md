@@ -1,6 +1,6 @@
 # GAMES MASTER
 
-This is a [Lewagon](https://www.lewagon.com) final project, with [Camila-mallmann](https://github.com/Camila-mallmann), [abdl242](https://github.com/abdl242) and [myself](https://github.com/Hip-po)
+This is a [Lewagon](https://www.lewagon.com) final project, of [Camila-mallmann](https://github.com/Camila-mallmann), [abdl242](https://github.com/abdl242) and [myself](https://github.com/Hip-po) with the help of [mtreca](https://github.com/mtreca)
 
 ## The project
 
@@ -76,12 +76,3 @@ Through many Conv2D layers, a flatten one and a linear corresponding to the choi
 The only tranformation done here is a to_tensor one to make it readable.
 
 Also, we made a slighty modification to the choices to make our model more efficient, we have added two combined keyboards choice.
-
-
-## Training
-
-For the moment, we are only training the model on the first level.
-
-
-
-## Result
